@@ -1,15 +1,12 @@
+import fastifyCookie from '@fastify/cookie'
 import fastify from 'fastify'
-import { db } from './database'
 import { env } from './env'
+import { transactionsRoutes } from './routes/transactions'
 
 const app = fastify()
 
-app.get('/', async () => {
-  const transactions = await db('transactions')
-    .where('amount', 1000)
-    .select('id')
-  return transactions
-})
+app.register(fastifyCookie)
+app.register(transactionsRoutes, { prefix: 'transactions' })
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`[${env.NODE_ENV}] Server running on port ${env.PORT}`)
