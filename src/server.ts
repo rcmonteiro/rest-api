@@ -1,13 +1,16 @@
 import fastify from 'fastify'
 import { db } from './database'
+import { env } from './env'
 
 const app = fastify()
 
 app.get('/', async () => {
-  const tables = await db('sqlite_schema').select('*')
-  return tables
+  const transactions = await db('transactions')
+    .where('amount', 1000)
+    .select('id')
+  return transactions
 })
 
-app.listen({ port: 3333 }).then(() => {
-  console.log('Server running on port 3333')
+app.listen({ port: env.PORT }).then(() => {
+  console.log(`[${env.NODE_ENV}] Server running on port ${env.PORT}`)
 })
